@@ -33,6 +33,8 @@ class CompanyResource extends Resource
     protected static ?string $slug = 'empresas';
 
     protected static ?string $recordTitleAttribute = 'name';
+    protected static ?int $navigationSort = 2;
+
 
 
     public static function form(Schema $schema): Schema

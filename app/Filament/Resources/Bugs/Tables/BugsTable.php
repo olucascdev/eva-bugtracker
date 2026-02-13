@@ -2,12 +2,19 @@
 
 namespace App\Filament\Resources\Bugs\Tables;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Notifications\Notification;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -17,20 +24,20 @@ class BugsTable
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('ID')
                     ->sortable()
                     ->searchable(),
-                \Filament\Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label('Título')
                     ->searchable()
                     ->wrap(),
-                \Filament\Tables\Columns\TextColumn::make('company.name')
+                TextColumn::make('company.name')
                     ->label('Empresa')
                     ->sortable()
                     ->searchable()
                     ->toggleable(),
-                \Filament\Tables\Columns\TextColumn::make('status.name')
+                TextColumn::make('status.name')
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state) => match ($state) {
@@ -43,7 +50,7 @@ class BugsTable
                         default => 'gray',
                     })
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('priority.name')
+                TextColumn::make('priority.name')
                     ->label('Prioridade')
                     ->badge()
                     ->color(fn (string $state) => match ($state) {
@@ -55,46 +62,78 @@ class BugsTable
                         default => 'gray',
                     })
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('assignedTo.name')
+                TextColumn::make('assignedTo.name')
                     ->label('Atribuído a')
                     ->toggleable(),
-                \Filament\Tables\Columns\TextColumn::make('opened_at')
+                TextColumn::make('opened_at')
                     ->label('Aberto em')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('completed_at')
+                TextColumn::make('completed_at')
                     ->label('Concluído em')
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->label('Atualizado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->filters([
-                \Filament\Tables\Filters\TrashedFilter::make(),
-                \Filament\Tables\Filters\SelectFilter::make('company')
+                TrashedFilter::make(),
+                SelectFilter::make('company')
                     ->relationship('company', 'name')
                     ->label('Empresa')
                     ->searchable()
                     ->preload(),
-                \Filament\Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->relationship('status', 'name')
                     ->label('Status')
                     ->searchable()
                     ->preload(),
-                \Filament\Tables\Filters\SelectFilter::make('priority')
+                SelectFilter::make('priority')
                     ->relationship('priority', 'name')
                     ->label('Prioridade')
                     ->searchable()
                     ->preload(),
             ])
             ->recordActions([
-                \Filament\Tables\Actions\ViewAction::make(),
-                \Filament\Tables\Actions\EditAction::make(),
+                Action::make('finalizar')
+                    ->label('Finalizar')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->form([
+                        DateTimePicker::make('completed_at')
+                            ->label('Concluído em')
+                            ->default(now())
+                            ->required(),
+                    ])
+                    ->action(function (\App\Models\Bug $record, array $data): void {
+                        $resolvedStatusId = \App\Models\BugStatus::where('slug', 'resolvido')->value('id');
+                        
+                        $record->update([
+                            'completed_at' => $data['completed_at'],
+                            'bug_status_id' => $resolvedStatusId ?? $record->bug_status_id,
+                        ]);
+                        
+                        Notification::make()
+                            ->title('Bug finalizado com sucesso')
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn (\App\Models\Bug $record): bool => optional($record->status)->slug !== 'resolvido'),
+                    ActionGroup::make([
+                        ViewAction::make(),
+                        EditAction::make(),
+                        DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
-                \Filament\Tables\Actions\BulkActionGroup::make([
-                    \Filament\Tables\Actions\DeleteBulkAction::make(),
-                    \Filament\Tables\Actions\ForceDeleteBulkAction::make(),
-                    \Filament\Tables\Actions\RestoreBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

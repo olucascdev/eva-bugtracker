@@ -13,7 +13,7 @@ class ViewBug extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            
         ];
     }
 }

@@ -30,6 +30,9 @@ class BugPriorityResource extends Resource
 
     protected static ?string $slug = 'prioridades-de-bugs';
 
+    protected static ?int $navigationSort = 4;
+
+
     public static function form(Schema $schema): Schema
     {
         return BugPriorityForm::configure($schema);
