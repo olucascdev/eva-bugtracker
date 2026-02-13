@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BugStatusSeeder::class,
             BugPrioritySeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }
