@@ -63,7 +63,7 @@ class ActivitiesRelationManager extends RelationManager
 
                         // Field Label Mapping
                         $labels = [
-                            'title' => 'Titulo',
+                            'title' => 'Título',
                             'description' => 'Descrição',
                             'company_id' => 'Empresa',
                             'bug_status_id' => 'Status',
@@ -96,27 +96,50 @@ class ActivitiesRelationManager extends RelationManager
                             if (in_array($key, ['updated_at', 'created_at', 'id', 'deleted_at'])) continue;
                             
                             $label = $labels[$key] ?? $key;
-                            $value = $attributes[$key] ?? null;
+                            $newValue = $attributes[$key] ?? null;
                             $oldValue = $old[$key] ?? null;
 
                             // Skip if values are identical
-                            if ($value == $oldValue) continue;
+                            if ($newValue == $oldValue) continue;
 
-                            // Format specific fields logic could go here (e.g. resolving IDs to names), 
-                            // but for "simple" text we just show the field name change.
-                            
-                            // Simple output: "Mudou [Campo]"
-                            // Or slightly more detailed: "Mudou [Campo] (Antigo -> Novo)"
-                            // User asked for: "mudou a a descrição, mudou horario"
-                            
-                            $changes[] = "Mudou <strong>{$label}</strong>";
+                            // Resolve logic
+                            if ($key === 'bug_status_id') {
+                                $newStatus = \App\Models\BugStatus::find($newValue);
+                                $changes[] = "Mudou <strong>{$label}</strong> para '{$newStatus?->name}'";
+                                continue;
+                            }
+
+                            if ($key === 'bug_priority_id') {
+                                $newPriority = \App\Models\BugPriority::find($newValue);
+                                $changes[] = "Mudou <strong>{$label}</strong> para '{$newPriority?->name}'";
+                                continue;
+                            }
+
+                            if ($key === 'assigned_to_user_id') {
+                                if (empty($newValue)) {
+                                    $changes[] = "Removeu <strong>{$label}</strong>";
+                                } else {
+                                    $newUser = \App\Models\User::find($newValue);
+                                    $changes[] = "Atribuiu <strong>{$label}</strong> a '{$newUser?->name}'";
+                                }
+                                continue;
+                            }
+
+                            if (in_array($key, ['opened_at', 'estimated_completion_at', 'completed_at', 'error_datetime'])) {
+                                $formattedDate = $newValue ? \Carbon\Carbon::parse($newValue)->format('d/m/Y H:i') : 'N/A';
+                                $changes[] = "Alterou <strong>{$label}</strong> para '{$formattedDate}'";
+                                continue;
+                            }
+
+                            // Generic fallback
+                            $changes[] = "Atualizou <strong>{$label}</strong>";
                         }
                         
                         if (empty($changes)) {
                              return 'Sem alterações visíveis';
                         }
                         
-                        return new \Illuminate\Support\HtmlString(implode(', ', $changes));
+                        return new \Illuminate\Support\HtmlString(implode('<br>', $changes));
                     })
                     ->html(),
             ])
