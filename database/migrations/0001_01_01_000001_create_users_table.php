@@ -18,14 +18,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'support', 'client'])->default('client');
+            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
 
             $table->index('company_id');
-            $table->index('role');
+
             $table->index('is_active');
         });
 

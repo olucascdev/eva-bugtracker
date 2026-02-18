@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'role' => 'client', // Default role
+            'role_id' => \App\Models\Role::factory(), // Each user gets a role (or random one from existing if we changed factory)
             'company_id' => \App\Models\Company::factory(), // Default create a company
             'is_active' => true,
         ];

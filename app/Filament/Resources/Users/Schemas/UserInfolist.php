@@ -21,7 +21,7 @@ class UserInfolist
                             ->label('Nome'),
                         TextEntry::make('email')
                             ->label('Email'),
-                        TextEntry::make('role')
+                        TextEntry::make('role.name')
                             ->label('Função')
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {

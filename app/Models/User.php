@@ -19,7 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role_id',
         'is_active',
     ];
 
@@ -41,6 +41,11 @@ class User extends Authenticatable
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 
     public function reportedBugs(): HasMany
@@ -66,21 +71,21 @@ class User extends Authenticatable
     // Role helpers
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role?->name === 'admin';
     }
 
     public function isSupport(): bool
     {
-        return $this->role === 'support';
+        return $this->role?->name === 'support';
     }
 
     public function isClient(): bool
     {
-        return $this->role === 'client';
+        return in_array($this->role?->name, ['client', 'client-admin', 'client-user']);
     }
 
     public function isEvaUser(): bool
     {
-        return in_array($this->role, ['admin', 'support']);
+        return in_array($this->role?->name, ['admin', 'support']);
     }
 }

@@ -11,6 +11,7 @@ use App\Filament\Resources\Bugs\Schemas\BugInfolist;
 use App\Filament\Resources\Bugs\Tables\BugsTable;
 use App\Models\Bug;
 use BackedEnum;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -25,7 +26,6 @@ class BugResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBugAnt;
 
     protected static ?string $recordTitleAttribute = 'title';
-   
 
     protected static ?string $navigationLabel = 'Central de Bugs';
 
@@ -36,7 +36,6 @@ class BugResource extends Resource
     protected static ?string $slug = 'central-de-bugs';
 
     protected static ?int $navigationSort = 1;
-
 
     public static function form(Schema $schema): Schema
     {
@@ -58,6 +57,15 @@ class BugResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\EditBug::class,
+            Pages\ViewBug::class,
+
+        ]);
     }
 
     public static function getPages(): array

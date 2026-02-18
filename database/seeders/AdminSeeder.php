@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AdminSeeder extends Seeder
 {
@@ -31,7 +30,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Administrador',
                 'password' => Hash::make('password'),
-                'role' => 'admin',
+                'role_id' => \App\Models\Role::firstWhere('name', 'admin')->id,
                 'company_id' => $evaCompany->id,
                 'email_verified_at' => now(),
                 'is_active' => true,
@@ -39,9 +38,9 @@ class AdminSeeder extends Seeder
         );
 
         $this->command->info('Admin user created/verified:');
-        $this->command->info('Email: ' . $admin->email);
+        $this->command->info('Email: '.$admin->email);
         $this->command->info('Password: password');
-        $this->command->info('Role: ' . $admin->role);
-        $this->command->info('Company: ' . $evaCompany->name);
+        $this->command->info('Role: '.$admin->role->name);
+        $this->command->info('Company: '.$evaCompany->name);
     }
 }

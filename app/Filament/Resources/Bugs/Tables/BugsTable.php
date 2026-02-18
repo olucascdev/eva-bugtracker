@@ -12,6 +12,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -111,22 +112,49 @@ class BugsTable
                     ])
                     ->action(function (\App\Models\Bug $record, array $data): void {
                         $resolvedStatusId = \App\Models\BugStatus::where('slug', 'resolvido')->value('id');
-                        
+
                         $record->update([
                             'completed_at' => $data['completed_at'],
                             'bug_status_id' => $resolvedStatusId ?? $record->bug_status_id,
                         ]);
-                        
+
                         Notification::make()
                             ->title('Bug finalizado com sucesso')
                             ->success()
                             ->send();
                     })
                     ->visible(fn (\App\Models\Bug $record): bool => optional($record->status)->slug !== 'resolvido'),
-                    ActionGroup::make([
-                        ViewAction::make(),
-                        EditAction::make(),
-                        DeleteAction::make(),
+                Action::make('atribuir')
+                    ->label('Atribuir')
+                    ->icon('heroicon-o-user-plus')
+                    ->color('primary')
+                    ->form([
+                        Select::make('assigned_to_user_id')
+                            ->label('Atribuir a')
+                            ->relationship(
+                                name: 'assignedTo',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn ($query) => $query->whereIn('role', ['admin', 'support']),
+                            )
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ])
+                    ->action(function (\App\Models\Bug $record, array $data): void {
+                        $record->update([
+                            'assigned_to_user_id' => $data['assigned_to_user_id'],
+                        ]);
+
+                        Notification::make()
+                            ->title('Bug atribuído com sucesso')
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn (\App\Models\Bug $record): bool => $record->assigned_to_user_id === null),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([

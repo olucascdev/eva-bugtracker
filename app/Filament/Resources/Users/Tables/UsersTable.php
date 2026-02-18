@@ -30,10 +30,10 @@ class UsersTable
                     ->label('Email')
                     ->searchable()
                     ->copyable(),
-                TextColumn::make('role')
+                TextColumn::make('role.name')
                     ->label('Função')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn ($state): string => match ($state) {
                         'admin' => 'danger',
                         'support' => 'warning',
                         'client' => 'info',
@@ -58,12 +58,8 @@ class UsersTable
             ->filters([
                 TrashedFilter::make(),
                 SelectFilter::make('role')
-                    ->label('Função')
-                    ->options([
-                        'admin' => 'Admin',
-                        'support' => 'Suporte',
-                        'client' => 'Cliente',
-                    ]),
+                    ->relationship('role', 'name')
+                    ->label('Função'),
                 SelectFilter::make('company')
                     ->relationship('company', 'name')
                     ->label('Empresa')

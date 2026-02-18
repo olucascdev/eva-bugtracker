@@ -35,13 +35,9 @@ class UserForm
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->maxLength(255),
-                        Select::make('role')
+                        Select::make('role_id')
                             ->label('Função')
-                            ->options([
-                                'admin' => 'Admin',
-                                'support' => 'Suporte',
-                                'client' => 'Cliente',
-                            ])
+                            ->relationship('role', 'name')
                             ->required()
                             ->live(),
                         Select::make('company_id')
@@ -49,8 +45,7 @@ class UserForm
                             ->relationship('company', 'name')
                             ->searchable()
                             ->preload()
-                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('role') === 'client')
-                            ->visible(fn (\Filament\Schemas\Components\Utilities\Get $get) => $get('role') === 'client')
+                            ->required(fn (\Filament\Schemas\Components\Utilities\Get $get) => \App\Models\Role::find($get('role_id'))?->name === 'client')
                             ->columnSpanFull(),
                         Toggle::make('is_active')
                             ->label('Ativo')
