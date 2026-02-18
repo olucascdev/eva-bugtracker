@@ -18,7 +18,7 @@ class BugPriorityResource extends Resource
 {
     protected static ?string $model = BugPriority::class;
 
-     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFlag;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFlag;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -31,7 +31,6 @@ class BugPriorityResource extends Resource
     protected static ?string $slug = 'prioridades-de-bugs';
 
     protected static ?int $navigationSort = 4;
-
 
     public static function form(Schema $schema): Schema
     {
@@ -54,8 +53,8 @@ class BugPriorityResource extends Resource
     {
         return [
             'index' => ListBugPriorities::route('/'),
-            //'create' => CreateBugPriority::route('/create'),
-            //'edit' => EditBugPriority::route('/{record}/edit'),
+            // 'create' => CreateBugPriority::route('/create'),
+            // 'edit' => EditBugPriority::route('/{record}/edit'),
         ];
     }
 }

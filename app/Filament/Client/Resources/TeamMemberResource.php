@@ -13,13 +13,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -129,8 +127,8 @@ class TeamMemberResource extends Resource
                                 ->success()
                                 ->send();
                         }),
-                    ]),
-               
+                ]),
+
             ])
             ->bulkActions([
                 BulkActionGroup::make([

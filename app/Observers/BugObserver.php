@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Filament\Resources\Bugs\Pages\ViewBug;
 use App\Models\Bug;
-use App\Models\BugStatusHistory;
 use Filament\Actions\Action;
 
 class BugObserver
@@ -12,15 +11,6 @@ class BugObserver
     public function created(Bug $bug): void
     {
         \Illuminate\Support\Facades\Log::info('BugObserver: created called', ['bug_id' => $bug->id, 'user_id' => auth()->id(), 'is_client' => auth()->user()?->isClient()]);
-
-        // Record initial status when bug is created
-        BugStatusHistory::create([
-            'bug_id' => $bug->id,
-            'from_status_id' => null,
-            'to_status_id' => $bug->bug_status_id,
-            'changed_by_user_id' => auth()->id() ?? $bug->reported_by_user_id,
-            'notes' => 'Bug criado',
-        ]);
 
         if (auth()->check() && auth()->user()->isClient()) {
             \Filament\Notifications\Notification::make()
@@ -32,22 +22,12 @@ class BugObserver
                         ->button()
                         ->url(ViewBug::getUrl(['record' => $bug->id], panel: 'eva')),
                 ])
-                ->sendToDatabase(\App\Models\User::whereIn('role', ['admin', 'support'])->get());
+                ->sendToDatabase(\App\Models\User::whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support']))->get());
         }
     }
 
     public function updating(Bug $bug): void
     {
-        // Track status changes
-        if ($bug->isDirty('bug_status_id')) {
-            BugStatusHistory::create([
-                'bug_id' => $bug->id,
-                'from_status_id' => $bug->getOriginal('bug_status_id'),
-                'to_status_id' => $bug->bug_status_id,
-                'changed_by_user_id' => auth()->id(),
-                'notes' => null,
-            ]);
-        }
 
         // Auto-set completed_at when status changes to "Resolvido" or "Fechado"
         if ($bug->isDirty('bug_status_id')) {
@@ -73,7 +53,7 @@ class BugObserver
                         ->button()
                         ->url(ViewBug::getUrl(['record' => $bug->id], panel: 'eva')),
                 ])
-                ->sendToDatabase(\App\Models\User::whereIn('role', ['admin', 'support'])->get());
+                ->sendToDatabase(\App\Models\User::whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support']))->get());
         }
 
         // Eva -> Client notifications
@@ -123,7 +103,7 @@ class BugObserver
                 ->title('Bug Removido pelo Cliente')
                 ->body("O cliente removeu o bug: {$bug->title}")
                 ->warning()
-                ->sendToDatabase(\App\Models\User::whereIn('role', ['admin', 'support'])->get());
+                ->sendToDatabase(\App\Models\User::whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support']))->get());
         }
     }
 }

@@ -25,11 +25,11 @@ class BugFactory extends Factory
         $priority = BugPriority::inRandomOrder()->first();
 
         // Se não existirem, tenta pegar o primeiro disponível (fallback)
-        if (!$status) {
-             $status = BugStatus::first(); 
+        if (! $status) {
+            $status = BugStatus::first();
         }
-        if (!$priority) {
-             $priority = BugPriority::first();
+        if (! $priority) {
+            $priority = BugPriority::first();
         }
 
         return [

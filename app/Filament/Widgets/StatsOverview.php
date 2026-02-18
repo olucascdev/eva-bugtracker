@@ -4,9 +4,9 @@ namespace App\Filament\Widgets;
 
 use App\Enums\BugStatusEnum;
 use App\Models\Bug;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Database\Eloquent\Builder;
 
 class StatsOverview extends StatsOverviewWidget
@@ -21,16 +21,16 @@ class StatsOverview extends StatsOverviewWidget
         $end = now();
 
         $baseQuery = Bug::query()
-            ->when($companyId, fn(Builder $q) => $q->where('company_id', $companyId))
-            ->when($start, fn(Builder $q) => $q->whereDate('created_at', '>=', $start))
-            ->when($end, fn(Builder $q) => $q->whereDate('created_at', '<=', $end));
+            ->when($companyId, fn (Builder $q) => $q->where('company_id', $companyId))
+            ->when($start, fn (Builder $q) => $q->whereDate('created_at', '>=', $start))
+            ->when($end, fn (Builder $q) => $q->whereDate('created_at', '<=', $end));
 
         $totalOpen = (clone $baseQuery)
-            ->whereHas('status', fn($q) => $q->whereNotIn('slug', [BugStatusEnum::RESOLVIDO->value, BugStatusEnum::FECHADO->value]))
+            ->whereHas('status', fn ($q) => $q->whereNotIn('slug', [BugStatusEnum::RESOLVIDO->value, BugStatusEnum::FECHADO->value]))
             ->count();
 
         $totalResolved = (clone $baseQuery)
-            ->whereHas('status', fn($q) => $q->where('slug', BugStatusEnum::RESOLVIDO->value))
+            ->whereHas('status', fn ($q) => $q->where('slug', BugStatusEnum::RESOLVIDO->value))
             ->count();
 
         $total = (clone $baseQuery)->count();
@@ -40,23 +40,22 @@ class StatsOverview extends StatsOverviewWidget
             ->whereNotNull('estimated_completion_at')
             ->whereNull('completed_at')
             ->where('estimated_completion_at', '<', now())
-            ->whereHas('status', fn($q) => $q->whereNotIn('slug', [BugStatusEnum::RESOLVIDO->value, BugStatusEnum::FECHADO->value]))
+            ->whereHas('status', fn ($q) => $q->whereNotIn('slug', [BugStatusEnum::RESOLVIDO->value, BugStatusEnum::FECHADO->value]))
             ->count();
-
 
         $avgSeconds = (clone $baseQuery)
             ->whereNotNull('completed_at')
             ->selectRaw('AVG(EXTRACT(EPOCH FROM (completed_at - created_at))) as avg_seconds')
             ->value('avg_seconds');
-            
+
         $mttr = '-';
         if ($avgSeconds) {
             $days = $avgSeconds / 86400;
             if ($days < 1) {
                 $hours = $avgSeconds / 3600;
-                $mttr = round($hours, 1) . ' horas';
+                $mttr = round($hours, 1).' horas';
             } else {
-                $mttr = round($days, 1) . ' dias';
+                $mttr = round($days, 1).' dias';
             }
         }
 
@@ -70,13 +69,13 @@ class StatsOverview extends StatsOverviewWidget
                 ->description('Aguardando resolução')
                 ->descriptionIcon('heroicon-m-exclamation-circle')
                 ->color('danger'),
-                
+
             Stat::make('Resolvidos', $totalResolved)
                 ->description('Concluídos no período')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Taxa de Resolução', $resolutionRate . '%')
+            Stat::make('Taxa de Resolução', $resolutionRate.'%')
                 ->description('Do total reportado')
                 ->color($resolutionRate > 80 ? 'success' : ($resolutionRate > 50 ? 'warning' : 'danger')),
 

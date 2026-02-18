@@ -22,7 +22,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -62,8 +62,8 @@ class UserResource extends Resource
     {
         return [
             'index' => ListUsers::route('/'),
-           // 'create' => CreateUser::route('/criar'),
-            //'view' => ViewUser::route('/{record}'),
+            // 'create' => CreateUser::route('/criar'),
+            // 'view' => ViewUser::route('/{record}'),
             // 'edit' => EditUser::route('/{record}/editar'),
         ];
     }

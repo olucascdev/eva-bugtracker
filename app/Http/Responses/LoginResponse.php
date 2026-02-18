@@ -2,8 +2,8 @@
 
 namespace App\Http\Responses;
 
-use Filament\Facades\Filament;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
+use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;
 use Livewire\Features\SupportRedirects\Redirector;
 

@@ -13,6 +13,7 @@ class BugsByStatusChart extends ChartWidget
     use InteractsWithPageFilters;
 
     protected ?string $heading = 'Bugs por Status';
+
     protected static ?int $sort = 2;
 
     protected function getData(): array
@@ -30,11 +31,11 @@ class BugsByStatusChart extends ChartWidget
         foreach ($statuses as $status) {
             $count = Bug::query()
                 ->where('bug_status_id', $status->id)
-                ->when($companyId, fn(Builder $q) => $q->where('company_id', $companyId))
-                ->when($start, fn(Builder $q) => $q->whereDate('created_at', '>=', $start))
-                ->when($end, fn(Builder $q) => $q->whereDate('created_at', '<=', $end))
+                ->when($companyId, fn (Builder $q) => $q->where('company_id', $companyId))
+                ->when($start, fn (Builder $q) => $q->whereDate('created_at', '>=', $start))
+                ->when($end, fn (Builder $q) => $q->whereDate('created_at', '<=', $end))
                 ->count();
-            
+
             $labels[] = $status->name;
             $data[] = $count;
             $colors[] = $status->color; // Assuming color is hex or compatible

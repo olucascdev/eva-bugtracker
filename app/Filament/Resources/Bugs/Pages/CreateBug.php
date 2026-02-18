@@ -8,5 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateBug extends CreateRecord
 {
     protected static ?string $title = 'Reportar Bug';
+
     protected static string $resource = BugResource::class;
 }

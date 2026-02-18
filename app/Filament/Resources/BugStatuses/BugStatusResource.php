@@ -18,7 +18,7 @@ class BugStatusResource extends Resource
 {
     protected static ?string $model = BugStatus::class;
 
-     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -31,7 +31,6 @@ class BugStatusResource extends Resource
     protected static ?string $slug = 'status-de-bugs';
 
     protected static ?int $navigationSort = 3;
-
 
     public static function form(Schema $schema): Schema
     {
@@ -54,8 +53,8 @@ class BugStatusResource extends Resource
     {
         return [
             'index' => ListBugStatuses::route('/'),
-           // 'create' => CreateBugStatus::route('/create'),
-           //'edit' => EditBugStatus::route('/{record}/edit'),
+            // 'create' => CreateBugStatus::route('/create'),
+            // 'edit' => EditBugStatus::route('/{record}/edit'),
         ];
     }
 }

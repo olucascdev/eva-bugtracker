@@ -60,9 +60,9 @@ class RoleResource extends Resource
     {
         return [
             'index' => ListRoles::route('/'),
-           // 'create' => CreateRole::route('/criar'),
-           // 'view' => ViewRole::route('/{record}'),
-           // 'edit' => EditRole::route('/{record}/editar'),
+            // 'create' => CreateRole::route('/criar'),
+            // 'view' => ViewRole::route('/{record}'),
+            // 'edit' => EditRole::route('/{record}/editar'),
         ];
     }
 }

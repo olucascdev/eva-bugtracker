@@ -76,7 +76,7 @@ class BugInfolist
                             ->label('Concluído em')
                             ->dateTime('d/m/Y H:i'),
                     ]),
-                 \Filament\Schemas\Components\Section::make('Métricas')
+                \Filament\Schemas\Components\Section::make('Métricas')
                     ->columns(3)
                     ->schema([
                         \Filament\Infolists\Components\TextEntry::make('total_interactions')

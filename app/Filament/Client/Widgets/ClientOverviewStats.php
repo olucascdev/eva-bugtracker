@@ -48,7 +48,7 @@ class ClientOverviewStats extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Taxa de Resolução', number_format($resolutionRate, 1) . '%')
+            Stat::make('Taxa de Resolução', number_format($resolutionRate, 1).'%')
                 ->description('Percentual de bugs resolvidos')
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('info'),

@@ -134,7 +134,7 @@ class BugsTable
                             ->relationship(
                                 name: 'assignedTo',
                                 titleAttribute: 'name',
-                                modifyQueryUsing: fn ($query) => $query->whereIn('role', ['admin', 'support']),
+                                modifyQueryUsing: fn ($query) => $query->whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support'])),
                             )
                             ->searchable()
                             ->preload()

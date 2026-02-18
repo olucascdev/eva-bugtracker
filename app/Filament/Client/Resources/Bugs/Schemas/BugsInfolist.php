@@ -2,9 +2,9 @@
 
 namespace App\Filament\Client\Resources\Bugs\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class BugsInfolist
 {
@@ -63,7 +63,7 @@ class BugsInfolist
                         TextEntry::make('reportedBy.name')
                             ->label('Reportado por'),
                     ]),
-                 Section::make('Datas e Prazos')
+                Section::make('Datas e Prazos')
                     ->columns(3)
                     ->schema([
                         TextEntry::make('opened_at')

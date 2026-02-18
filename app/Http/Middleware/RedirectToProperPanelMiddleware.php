@@ -17,7 +17,7 @@ class RedirectToProperPanelMiddleware
 
         $user = Filament::auth()->user();
         $panel = Filament::getCurrentPanel();
-        
+
         if (! $panel) {
             return $next($request);
         }

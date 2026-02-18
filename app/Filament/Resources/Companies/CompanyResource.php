@@ -22,7 +22,7 @@ class CompanyResource extends Resource
 {
     protected static ?string $model = Company::class;
 
-     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
     protected static ?string $navigationLabel = 'Empresas';
 
@@ -33,9 +33,8 @@ class CompanyResource extends Resource
     protected static ?string $slug = 'empresas';
 
     protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?int $navigationSort = 2;
-
-
 
     public static function form(Schema $schema): Schema
     {
@@ -63,9 +62,9 @@ class CompanyResource extends Resource
     {
         return [
             'index' => ListCompanies::route('/'),
-            //'create' => CreateCompany::route('/criar'),
-            //'view' => ViewCompany::route('/{record}'),
-            //'edit' => EditCompany::route('/{record}/editar'),
+            // 'create' => CreateCompany::route('/criar'),
+            // 'view' => ViewCompany::route('/{record}'),
+            // 'edit' => EditCompany::route('/{record}/editar'),
         ];
     }
 

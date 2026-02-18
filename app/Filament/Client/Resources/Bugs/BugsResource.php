@@ -23,7 +23,6 @@ class BugsResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBugAnt;
 
     protected static ?string $recordTitleAttribute = 'title';
-   
 
     protected static ?string $navigationLabel = 'Reportar Bugs';
 

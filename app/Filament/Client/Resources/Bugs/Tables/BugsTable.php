@@ -2,7 +2,6 @@
 
 namespace App\Filament\Client\Resources\Bugs\Tables;
 
-
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

@@ -3,10 +3,6 @@
 namespace App\Filament\Resources\Bugs\Pages;
 
 use App\Filament\Resources\Bugs\BugResource;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
-use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditBug extends EditRecord
@@ -16,7 +12,7 @@ class EditBug extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            
+
         ];
     }
 }

@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TeamMembers extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
-    
+    protected int|string|array $columnSpan = 'full';
+
     protected static ?int $sort = 2;
 
     protected static ?string $heading = 'Equipe';

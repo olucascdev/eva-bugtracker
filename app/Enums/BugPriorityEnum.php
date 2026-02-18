@@ -56,14 +56,14 @@ enum BugPriorityEnum: string
     public static function options(): array
     {
         return collect(self::cases())
-            ->mapWithKeys(fn($case) => [$case->value => $case->label()])
+            ->mapWithKeys(fn ($case) => [$case->value => $case->label()])
             ->toArray();
     }
 
     public static function sortedByLevel(): array
     {
         return collect(self::cases())
-            ->sortByDesc(fn($case) => $case->level())
+            ->sortByDesc(fn ($case) => $case->level())
             ->values()
             ->toArray();
     }

@@ -11,6 +11,7 @@ class BugStatusHistory extends Model
     use HasFactory;
 
     public $timestamps = false;
+
     protected $table = 'bug_status_history';
 
     protected $fillable = [

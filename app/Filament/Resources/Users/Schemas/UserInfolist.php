@@ -14,7 +14,7 @@ class UserInfolist
         return $schema
             ->components([
                 Section::make('Informações do Usuário')
-                    ->columnSpanFull()  
+                    ->columnSpanFull()
                     ->columns(2)
                     ->schema([
                         TextEntry::make('name')

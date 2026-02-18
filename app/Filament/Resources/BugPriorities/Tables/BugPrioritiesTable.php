@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\BugPriorities\Tables;
 
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ColorColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -39,7 +37,7 @@ class BugPrioritiesTable
                 DeleteAction::make(),
             ])
             ->toolbarActions([
-                
+
             ]);
     }
 }

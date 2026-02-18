@@ -30,14 +30,14 @@ class BugForm
                                     ->required()
                                     ->default(fn () => auth()->user()->company_id)
                                     ->columnSpanFull(),
-                                
+
                                 TextInput::make('title')
                                     ->label('Título')
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpanFull()
                                     ->placeholder('Descreva o problema de forma resumida'),
-                                
+
                                 RichEditor::make('description')
                                     ->label('Descrição do Erro')
                                     ->required()
@@ -53,13 +53,13 @@ class BugForm
                                         'strike',
                                         'undo',
                                     ]),
-                                
+
                                 Textarea::make('expected_behavior')
                                     ->label('Comportamento Esperado')
                                     ->rows(3)
                                     ->columnSpanFull()
                                     ->placeholder('O que deveria acontecer?'),
-                                
+
                                 TextInput::make('conversation_link')
                                     ->label('Link da Conversa')
                                     ->url()
@@ -81,7 +81,7 @@ class BugForm
                                     ->preload()
                                     ->default(fn () => \App\Models\BugStatus::where('slug', 'reportado')->first()?->id)
                                     ->native(false),
-                                
+
                                 Select::make('bug_priority_id')
                                     ->label('Prioridade')
                                     ->relationship('priority', 'name')
@@ -89,7 +89,7 @@ class BugForm
                                     ->searchable()
                                     ->preload()
                                     ->native(false),
-                                
+
                                 Select::make('reported_by_user_id')
                                     ->label('Reportado Por')
                                     ->relationship('reportedBy', 'name')
@@ -98,7 +98,7 @@ class BugForm
                                     ->preload()
                                     ->default(fn () => auth()->id())
                                     ->native(false),
-                                
+
                                 Select::make('assigned_to_user_id')
                                     ->label('Atribuído Para')
                                     ->relationship('assignedTo', 'name')
@@ -116,14 +116,14 @@ class BugForm
                                     ->label('Data/Hora do Erro')
                                     ->seconds(false)
                                     ->native(false),
-                                
+
                                 DateTimePicker::make('opened_at')
                                     ->label('Aberto em')
                                     ->default(now())
                                     ->required()
                                     ->seconds(false)
                                     ->native(false),
-                                
+
                                 DateTimePicker::make('estimated_completion_at')
                                     ->label('Previsão de Conclusão')
                                     ->seconds(false)
@@ -141,7 +141,7 @@ class BugForm
                                     ->columnSpanFull()
                                     ->placeholder('Instruções provisórias enquanto o bug não é corrigido')
                                     ->helperText('Informe aos usuários como contornar o problema temporariamente'),
-                                
+
                                 Textarea::make('observations')
                                     ->label('Observações Adicionais')
                                     ->rows(4)
