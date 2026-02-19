@@ -10,6 +10,16 @@ class BugObserver
 {
     public function created(Bug $bug): void
     {
+        // Log creation
+        \App\Models\BugLog::create([
+            'bug_id' => $bug->id,
+            'user_id' => auth()->id(),
+            'event' => 'created',
+            'field' => null,
+            'old_value' => null,
+            'new_value' => null,
+        ]);
+
         \Illuminate\Support\Facades\Log::info('BugObserver: created called', ['bug_id' => $bug->id, 'user_id' => auth()->id(), 'is_client' => auth()->user()?->isClient()]);
 
         if (auth()->check() && auth()->user()->isClient()) {
@@ -28,7 +38,6 @@ class BugObserver
 
     public function updating(Bug $bug): void
     {
-
         // Auto-set completed_at when status changes to "Resolvido" or "Fechado"
         if ($bug->isDirty('bug_status_id')) {
             $newStatus = $bug->status;
@@ -40,6 +49,32 @@ class BugObserver
 
     public function updated(Bug $bug): void
     {
+        // Log changes
+        $ignoredFields = ['updated_at', 'created_at', 'id', 'deleted_at', 'total_interactions', 'error_interactions', 'ai_accuracy_rate'];
+        $dirty = $bug->getDirty();
+
+        foreach ($dirty as $field => $newValue) {
+            if (in_array($field, $ignoredFields)) {
+                continue;
+            }
+
+            $oldValue = $bug->getOriginal($field);
+
+            // Skip if values are effectively the same (e.g. "1" vs 1)
+            if ($oldValue == $newValue) {
+                continue;
+            }
+
+            \App\Models\BugLog::create([
+                'bug_id' => $bug->id,
+                'user_id' => auth()->id(),
+                'event' => 'updated',
+                'field' => $field,
+                'old_value' => (string) $oldValue,
+                'new_value' => (string) $newValue,
+            ]);
+        }
+
         \Illuminate\Support\Facades\Log::info('BugObserver: updated called', ['bug_id' => $bug->id, 'changes' => $bug->getChanges(), 'user' => auth()->id()]);
 
         // Client -> Eva notifications
@@ -98,6 +133,16 @@ class BugObserver
 
     public function deleted(Bug $bug): void
     {
+        // Log deletion
+        \App\Models\BugLog::create([
+            'bug_id' => $bug->id,
+            'user_id' => auth()->id(),
+            'event' => 'deleted',
+            'field' => null,
+            'old_value' => null,
+            'new_value' => null,
+        ]);
+
         if (auth()->check() && auth()->user()->isClient()) {
             \Filament\Notifications\Notification::make()
                 ->title('Bug Removido pelo Cliente')

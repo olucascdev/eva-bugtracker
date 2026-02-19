@@ -12,15 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Bug extends Model
 {
     use HasFactory, SoftDeletes;
-    use \Spatie\Activitylog\Traits\LogsActivity;
-
-    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
-    {
-        return \Spatie\Activitylog\LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
 
     protected $fillable = [
         'company_id',
@@ -95,6 +86,11 @@ class Bug extends Model
     public function attachments(): HasMany
     {
         return $this->hasMany(BugAttachment::class);
+    }
+
+    public function history(): HasMany
+    {
+        return $this->hasMany(BugLog::class)->orderBy('created_at', 'desc');
     }
 
     // Helper methods
