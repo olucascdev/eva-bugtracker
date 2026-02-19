@@ -23,11 +23,12 @@ class EvaPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // die('Provider Loaded');
         return $panel
             ->default()
             ->id('eva')
             ->path('eva')
-            //->databaseNotifications()
+            // ->databaseNotifications()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -45,12 +46,12 @@ class EvaPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                \App\Http\Middleware\RedirectToProperPanelMiddleware::class, // Run before AuthenticateSession
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
-                \App\Http\Middleware\RedirectToProperPanelMiddleware::class, // Added this middleware
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([

@@ -63,7 +63,8 @@ class TeamMemberResource extends Resource
                     ->label('Permissão')
                     ->options(function () {
                         return Role::whereIn('name', ['client-user'])
-                            ->pluck('description', 'id');
+                            ->get()
+                            ->mapWithKeys(fn (Role $role) => [$role->id => $role->description ?? $role->name]);
                     })
                     ->default(function () {
                         return Role::where('name', 'client-user')->first()?->id;

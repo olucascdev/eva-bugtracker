@@ -28,7 +28,7 @@ class ClientPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            //->databaseNotifications()
+            // ->databaseNotifications()
             ->discoverResources(in: app_path('Filament/Client/Resources'), for: 'App\Filament\Client\Resources')
             ->discoverPages(in: app_path('Filament/Client/Pages'), for: 'App\Filament\Client\Pages')
             ->pages([
@@ -42,12 +42,12 @@ class ClientPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
+                \App\Http\Middleware\RedirectToProperPanelMiddleware::class, // Run before AuthenticateSession
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
-                \App\Http\Middleware\RedirectToProperPanelMiddleware::class,
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([

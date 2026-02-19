@@ -32,14 +32,7 @@
         <!-- Main Content -->
         <div class="relative z-10 p-6 max-w-5xl w-full text-center">
             
-            <!-- Logo Icon -->
-            <div class="mb-10 flex justify-center">
-                <div class="h-24 w-24 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/40 transform rotate-3 transition-transform duration-300 hover:rotate-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-12 h-12 text-white">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S13.632 6.999 12 6.999c-1.632 0-3.132 2.053-3.132 5.001 0 5.467 4.5 9 4.5 9Zm3.5-9c0 1.25-.97 2.25-2.25 2.25h6.75M12 12c-1.25 0-2.25.97-2.25 2.25H3" />
-                    </svg>
-                </div>
-            </div>
+        
 
             <!-- Title -->
             <h1 class="text-6xl md:text-8xl font-bold text-slate-900 mb-8 tracking-tight leading-none">
