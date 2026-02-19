@@ -21,19 +21,6 @@ class BugObserver
         ]);
 
         \Illuminate\Support\Facades\Log::info('BugObserver: created called', ['bug_id' => $bug->id, 'user_id' => auth()->id(), 'is_client' => auth()->user()?->isClient()]);
-
-        if (auth()->check() && auth()->user()->isClient()) {
-            \Filament\Notifications\Notification::make()
-                ->title('Novo Bug Reportado')
-                ->body("O cliente {$bug->company->name} reportou um novo bug: {$bug->title}")
-                ->success()
-                ->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url(ViewBug::getUrl(['record' => $bug->id], panel: 'eva')),
-                ])
-                ->sendToDatabase(\App\Models\User::whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support']))->get());
-        }
     }
 
     public function updating(Bug $bug): void
@@ -49,7 +36,7 @@ class BugObserver
 
     public function updated(Bug $bug): void
     {
-        // Log changes
+        // Log changes (Atomic History)
         $ignoredFields = ['updated_at', 'created_at', 'id', 'deleted_at', 'total_interactions', 'error_interactions', 'ai_accuracy_rate'];
         $dirty = $bug->getDirty();
 
@@ -59,12 +46,9 @@ class BugObserver
             }
 
             $oldValue = $bug->getOriginal($field);
+            if ($oldValue == $newValue) continue;
 
-            // Skip if values are effectively the same (e.g. "1" vs 1)
-            if ($oldValue == $newValue) {
-                continue;
-            }
-
+            // Save to BugLog
             \App\Models\BugLog::create([
                 'bug_id' => $bug->id,
                 'user_id' => auth()->id(),
@@ -74,61 +58,8 @@ class BugObserver
                 'new_value' => (string) $newValue,
             ]);
         }
-
+        
         \Illuminate\Support\Facades\Log::info('BugObserver: updated called', ['bug_id' => $bug->id, 'changes' => $bug->getChanges(), 'user' => auth()->id()]);
-
-        // Client -> Eva notifications
-        if (auth()->check() && auth()->user()->isClient()) {
-            \Filament\Notifications\Notification::make()
-                ->title('Bug Atualizado pelo Cliente')
-                ->body("O cliente atualizou o bug: {$bug->title}")
-                ->info()
-                ->actions([
-                    Action::make('view')
-                        ->button()
-                        ->url(ViewBug::getUrl(['record' => $bug->id], panel: 'eva')),
-                ])
-                ->sendToDatabase(\App\Models\User::whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support']))->get());
-        }
-
-        // Eva -> Client notifications
-        if (auth()->check() && auth()->user()->isEvaUser()) {
-            $client = $bug->reportedBy;
-
-            if ($client) {
-                if ($bug->wasChanged('estimated_completion_at') && $bug->estimated_completion_at) {
-                    \Filament\Notifications\Notification::make()
-                        ->title('Previsão de Conclusão Atualizada')
-                        ->body("A previsão para o bug '{$bug->title}' foi definida para: ".$bug->estimated_completion_at->format('d/m/Y'))
-                        ->success()
-                        ->sendToDatabase($client);
-                }
-
-                if ($bug->wasChanged('temporary_guidance') && $bug->temporary_guidance) {
-                    \Filament\Notifications\Notification::make()
-                        ->title('Nova Orientação Temporária')
-                        ->body("Foi adicionada uma orientação para o bug '{$bug->title}': {$bug->temporary_guidance}")
-                        ->info()
-                        ->sendToDatabase($client);
-                }
-
-                if ($bug->wasChanged('assigned_to_user_id') && $bug->assigned_to_user_id) {
-                    \Filament\Notifications\Notification::make()
-                        ->title('Bug Atribuído')
-                        ->body("O bug '{$bug->title}' foi atribuído ao técnico {$bug->assignedTo->name}")
-                        ->info()
-                        ->sendToDatabase($client);
-                }
-
-                if ($bug->wasChanged('bug_status_id')) {
-                    \Filament\Notifications\Notification::make()
-                        ->title('Status do Bug Atualizado')
-                        ->body("O status do bug '{$bug->title}' mudou para: {$bug->status->name}")
-                        ->success()
-                        ->sendToDatabase($client);
-                }
-            }
-        }
     }
 
     public function deleted(Bug $bug): void
@@ -143,12 +74,6 @@ class BugObserver
             'new_value' => null,
         ]);
 
-        if (auth()->check() && auth()->user()->isClient()) {
-            \Filament\Notifications\Notification::make()
-                ->title('Bug Removido pelo Cliente')
-                ->body("O cliente removeu o bug: {$bug->title}")
-                ->warning()
-                ->sendToDatabase(\App\Models\User::whereHas('role', fn ($q) => $q->whereIn('name', ['admin', 'support']))->get());
-        }
+        \Illuminate\Support\Facades\Log::info('BugObserver: deleted called', ['bug_id' => $bug->id, 'user_id' => auth()->id()]);
     }
 }

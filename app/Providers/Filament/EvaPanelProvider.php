@@ -27,7 +27,7 @@ class EvaPanelProvider extends PanelProvider
             ->default()
             ->id('eva')
             ->path('eva')
-            ->databaseNotifications()
+            //->databaseNotifications()
             ->colors([
                 'primary' => Color::Amber,
             ])
