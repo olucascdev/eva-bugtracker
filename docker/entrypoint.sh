@@ -31,4 +31,4 @@ php artisan migrate --force
 echo "✅ Application ready!"
 
 # Start supervisor
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+exec /usr/bin/supervisord -c /etc/supervisord.conf

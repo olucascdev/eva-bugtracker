@@ -16,7 +16,8 @@ RUN composer install \
     --optimize-autoloader
 
 COPY . .
-RUN composer dump-autoload --optimize --no-dev
+RUN composer dump-autoload --optimize --no-dev --no-scripts
+
 
 # ============================================
 # Stage 2: Frontend Assets
@@ -86,7 +87,8 @@ WORKDIR /var/www/html
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 
 # Copy Supervisor config
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN mkdir -p /etc/supervisor.d /var/log/supervisor
+COPY docker/supervisord.conf /etc/supervisor.d/supervisord.ini
 
 # Copy application
 COPY --from=composer /app/vendor ./vendor
