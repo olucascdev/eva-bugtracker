@@ -23,6 +23,19 @@ class AuthPanelProvider extends PanelProvider
             ->id('auth')
             ->path('')
             ->login()
+            ->homeUrl(function (): string {
+                $user = auth()->user();
+
+                if (! $user) {
+                    return '/login';
+                }
+
+                if ($user->isAdmin() || $user->isSupport()) {
+                    return '/eva';
+                }
+
+                return '/client';
+            })
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
