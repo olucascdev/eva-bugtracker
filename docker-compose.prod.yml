@@ -1,0 +1,72 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bugtracker-eva-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-81}:80"
+    environment:
+      APP_NAME: "${APP_NAME:-Eva Tecnologia}"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: "${APP_KEY}"
+      APP_URL: "${APP_URL:-http://localhost:81}"
+      APP_LOCALE: pt_BR
+      APP_FALLBACK_LOCALE: en
+      DB_CONNECTION: pgsql
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_DATABASE: "${DB_DATABASE:-bugtracker_eva}"
+      DB_USERNAME: "${DB_USERNAME:-bugtracker}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: database
+      CACHE_STORE: database
+      FILESYSTEM_DISK: local
+      LOG_CHANNEL: stderr
+      MAIL_MAILER: "${MAIL_MAILER:-log}"
+      MAIL_HOST: "${MAIL_HOST:-}"
+      MAIL_PORT: "${MAIL_PORT:-587}"
+      MAIL_USERNAME: "${MAIL_USERNAME:-}"
+      MAIL_PASSWORD: "${MAIL_PASSWORD:-}"
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS:-noreply@evatecnologia.com.br}"
+      MAIL_FROM_NAME: "${MAIL_FROM_NAME:-Eva Tecnologia}"
+      EMAIL_ADMIN: "${EMAIL_ADMIN}"
+      PASSWORD_ADMIN: "${PASSWORD_ADMIN}"
+    volumes:
+      - app-storage:/var/www/html/storage/app
+    networks:
+      - bugtracker
+    depends_on:
+      pgsql:
+        condition: service_healthy
+
+  pgsql:
+    image: postgres:17-alpine
+    container_name: bugtracker-eva-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${DB_DATABASE:-bugtracker_eva}"
+      POSTGRES_USER: "${DB_USERNAME:-bugtracker}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - pgsql-data:/var/lib/postgresql/data
+    networks:
+      - bugtracker
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-bugtracker} -d ${DB_DATABASE:-bugtracker_eva}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  bugtracker:
+    driver: bridge
+
+volumes:
+  pgsql-data:
+    driver: local
+  app-storage:
+    driver: local

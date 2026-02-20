@@ -11,15 +11,17 @@ class BugStatusSeeder extends Seeder
     public function run(): void
     {
         foreach (BugStatusEnum::cases() as $status) {
-            DB::table('bug_statuses')->insert([
-                'name' => $status->label(),
-                'slug' => $status->value,
-                'color' => $status->color(),
-                'order' => $status->order(),
-                'is_default' => $status->isDefault(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            DB::table('bug_statuses')->updateOrInsert(
+                ['slug' => $status->value],
+                [
+                    'name' => $status->label(),
+                    'color' => $status->color(),
+                    'order' => $status->order(),
+                    'is_default' => $status->isDefault(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
 }
