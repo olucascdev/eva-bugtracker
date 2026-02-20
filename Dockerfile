@@ -5,6 +5,8 @@ FROM composer:2 AS composer
 
 WORKDIR /app
 
+RUN apk add --no-cache icu-dev && docker-php-ext-install intl
+
 COPY composer.json composer.lock ./
 RUN composer install \
     --no-dev \
@@ -50,15 +52,15 @@ RUN apk add --no-cache \
     $PHPIZE_DEPS \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
-        pdo_pgsql \
-        pgsql \
-        gd \
-        intl \
-        bcmath \
-        zip \
-        mbstring \
-        pcntl \
-        opcache \
+    pdo_pgsql \
+    pgsql \
+    gd \
+    intl \
+    bcmath \
+    zip \
+    mbstring \
+    pcntl \
+    opcache \
     && apk del $PHPIZE_DEPS linux-headers \
     && rm -rf /var/cache/apk/*
 
