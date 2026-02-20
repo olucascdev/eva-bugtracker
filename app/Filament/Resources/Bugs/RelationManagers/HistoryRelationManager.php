@@ -2,14 +2,6 @@
 
 namespace App\Filament\Resources\Bugs\RelationManagers;
 
-use Filament\Actions\AssociateAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -100,27 +92,27 @@ class HistoryRelationManager extends RelationManager
                             ];
 
                             $label = $fieldLabels[$record->field] ?? $record->field;
-                            
+
                             // Relation resolution for IDs
                             $oldDisplay = $record->old_value;
                             $newDisplay = $record->new_value;
 
                             if (str_ends_with($record->field, '_id')) {
                                 if ($record->field === 'bug_status_id') {
-                                    $oldDisplay = !empty($record->old_value) ? (\App\Models\BugStatus::find($record->old_value)?->name ?? $record->old_value) : '---';
-                                    $newDisplay = !empty($record->new_value) ? (\App\Models\BugStatus::find($record->new_value)?->name ?? $record->new_value) : '---';
+                                    $oldDisplay = ! empty($record->old_value) ? (\App\Models\BugStatus::find($record->old_value)?->name ?? $record->old_value) : '---';
+                                    $newDisplay = ! empty($record->new_value) ? (\App\Models\BugStatus::find($record->new_value)?->name ?? $record->new_value) : '---';
                                 } elseif ($record->field === 'bug_priority_id') {
-                                    $oldDisplay = !empty($record->old_value) ? (\App\Models\BugPriority::find($record->old_value)?->name ?? $record->old_value) : '---';
-                                    $newDisplay = !empty($record->new_value) ? (\App\Models\BugPriority::find($record->new_value)?->name ?? $record->new_value) : '---';
+                                    $oldDisplay = ! empty($record->old_value) ? (\App\Models\BugPriority::find($record->old_value)?->name ?? $record->old_value) : '---';
+                                    $newDisplay = ! empty($record->new_value) ? (\App\Models\BugPriority::find($record->new_value)?->name ?? $record->new_value) : '---';
                                 } elseif ($record->field === 'assigned_to_user_id' || $record->field === 'reported_by_user_id') {
-                                    $oldDisplay = !empty($record->old_value) ? (\App\Models\User::find($record->old_value)?->name ?? 'Ninguém') : 'Ninguém';
-                                    $newDisplay = !empty($record->new_value) ? (\App\Models\User::find($record->new_value)?->name ?? 'Ninguém') : 'Ninguém';
+                                    $oldDisplay = ! empty($record->old_value) ? (\App\Models\User::find($record->old_value)?->name ?? 'Ninguém') : 'Ninguém';
+                                    $newDisplay = ! empty($record->new_value) ? (\App\Models\User::find($record->new_value)?->name ?? 'Ninguém') : 'Ninguém';
                                 } elseif ($record->field === 'company_id') {
-                                    $oldDisplay = !empty($record->old_value) ? (\App\Models\Company::find($record->old_value)?->name ?? $record->old_value) : '---';
-                                    $newDisplay = !empty($record->new_value) ? (\App\Models\Company::find($record->new_value)?->name ?? $record->new_value) : '---';
+                                    $oldDisplay = ! empty($record->old_value) ? (\App\Models\Company::find($record->old_value)?->name ?? $record->old_value) : '---';
+                                    $newDisplay = ! empty($record->new_value) ? (\App\Models\Company::find($record->new_value)?->name ?? $record->new_value) : '---';
                                 }
                             }
-                            
+
                             // Date formatting
                             if (in_array($record->field, ['opened_at', 'estimated_completion_at', 'completed_at', 'error_datetime'])) {
                                 $oldDisplay = $record->old_value ? \Carbon\Carbon::parse($record->old_value)->format('d/m/Y H:i') : 'N/A';

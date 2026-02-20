@@ -1,9 +1,9 @@
 <?php
 
+use App\Filament\Client\Resources\TeamMemberResource\Pages\ManageTeamMembers;
 use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
-use App\Filament\Client\Resources\TeamMemberResource\Pages\ManageTeamMembers;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -17,7 +17,7 @@ beforeEach(function () {
 it('can render the team members management page for client-admin', function () {
     $company = Company::factory()->create();
     $adminRole = Role::where('name', 'client-admin')->first();
-    
+
     $user = User::factory()->create([
         'role_id' => $adminRole->id,
         'company_id' => $company->id,
@@ -33,7 +33,7 @@ it('allows client-admin to create a team member', function () {
     $company = Company::factory()->create();
     $adminRole = Role::where('name', 'client-admin')->first();
     $userRole = Role::where('name', 'client-user')->first();
-    
+
     $admin = User::factory()->create([
         'role_id' => $adminRole->id,
         'company_id' => $company->id,

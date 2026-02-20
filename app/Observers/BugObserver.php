@@ -2,9 +2,7 @@
 
 namespace App\Observers;
 
-use App\Filament\Resources\Bugs\Pages\ViewBug;
 use App\Models\Bug;
-use Filament\Actions\Action;
 
 class BugObserver
 {
@@ -46,7 +44,9 @@ class BugObserver
             }
 
             $oldValue = $bug->getOriginal($field);
-            if ($oldValue == $newValue) continue;
+            if ($oldValue == $newValue) {
+                continue;
+            }
 
             // Save to BugLog
             \App\Models\BugLog::create([
@@ -58,7 +58,7 @@ class BugObserver
                 'new_value' => (string) $newValue,
             ]);
         }
-        
+
         \Illuminate\Support\Facades\Log::info('BugObserver: updated called', ['bug_id' => $bug->id, 'changes' => $bug->getChanges(), 'user' => auth()->id()]);
     }
 

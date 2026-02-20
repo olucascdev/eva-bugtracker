@@ -51,9 +51,9 @@ class ProductionSeeder extends Seeder
 
             $this->command->info("Admin user created/updated with email: {$adminEmail}");
         } else {
-            $this->command->warn("EMAIL_ADMIN not set in .env, skipping admin user creation.");
+            $this->command->warn('EMAIL_ADMIN not set in .env, skipping admin user creation.');
         }
 
-        $this->command->info("Production seeding completed successfully.");
+        $this->command->info('Production seeding completed successfully.');
     }
 }
