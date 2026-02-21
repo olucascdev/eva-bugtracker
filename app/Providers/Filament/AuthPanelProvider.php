@@ -22,7 +22,7 @@ class AuthPanelProvider extends PanelProvider
         return $panel
             ->id('auth')
             ->path('')
-            ->login(\App\Filament\Auth\Login::class)
+            ->login()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
