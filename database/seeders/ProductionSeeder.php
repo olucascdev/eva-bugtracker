@@ -6,7 +6,6 @@ use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class ProductionSeeder extends Seeder
 {
@@ -15,7 +14,11 @@ class ProductionSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->command->info('🚀 Iniciando seed de PRODUÇÃO...');
+        $this->command->newLine();
+
         // 1. Run Core Seeders (Roles, Statuses, Priorities)
+        $this->command->info('⚙️  Roles, Statuses e Priorities...');
         $this->call([
             RoleSeeder::class,
             BugStatusSeeder::class,
@@ -23,6 +26,7 @@ class ProductionSeeder extends Seeder
         ]);
 
         // 2. Create Default Company "Eva Tecnologia"
+        $this->command->info('🏢 Criando empresa Eva Tecnologia...');
         $evaCompany = Company::updateOrCreate(
             ['slug' => 'eva-tecnologia'],
             [
@@ -31,29 +35,43 @@ class ProductionSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+        $this->command->info("   ✓ Empresa garantida: {$evaCompany->name}");
 
         // 3. Create Admin User
-        $adminEmail = config('admin.email');
-        $adminPassword = config('admin.password');
+        $this->command->info('👑 Criando administrador...');
+        $this->createAdmin($evaCompany->id);
 
-        if ($adminEmail) {
-            User::updateOrCreate(
-                ['email' => $adminEmail],
-                [
-                    'name' => 'Admin Eva',
-                    'password' => Hash::make($adminPassword),
-                    'role_id' => Role::where('name', 'admin')->first()->id,
-                    'company_id' => $evaCompany->id,
-                    'is_active' => true,
-                    'email_verified_at' => now(),
-                ]
+        $this->command->newLine();
+        $this->command->info('✅ PRODUÇÃO seed finalizado com sucesso!');
+        $this->command->newLine();
+    }
+
+    private function createAdmin(int $companyId): void
+    {
+        $email = config('admin.email');
+        $password = config('admin.password');
+        $name = config('admin.name', 'Administrador');
+
+        if (! $email || ! $password) {
+            $this->command->warn(
+                '⚠️  EMAIL_ADMIN ou PASSWORD_ADMIN não definidos. Admin não criado.'
             );
 
-            $this->command->info("Admin user created/updated with email: {$adminEmail}");
-        } else {
-            $this->command->warn('EMAIL_ADMIN not set in .env, skipping admin user creation.');
+            return;
         }
 
-        $this->command->info('Production seeding completed successfully.');
+        $user = User::updateOrCreate(
+            ['email' => $email],
+            [
+                'name' => $name,
+                'password' => $password,
+                'role_id' => Role::where('name', 'admin')->first()->id,
+                'company_id' => $companyId,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $this->command->info("   ✓ Admin garantido: {$user->email}");
     }
 }
