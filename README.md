@@ -1,59 +1,115 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BugTracker EVA
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web para registro e acompanhamento de bugs, com separação entre painel interno da EVA e painel do cliente.
 
-## About Laravel
+## O que é
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+O projeto centraliza o ciclo de vida de bugs reportados por clientes, permitindo abertura, triagem, acompanhamento, atribuição e análise operacional.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Funcionalidades
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- cadastro e acompanhamento de bugs;
+- classificação por status e prioridade;
+- atribuição de responsáveis internos;
+- controle de prazo e data de conclusão;
+- observações e orientações temporárias;
+- dashboard com métricas e gráficos;
+- ranking de principais reportadores e solucionadores;
+- gestão de usuários, empresas e perfis;
+- painel exclusivo para clientes;
+- gestão de membros da equipe do cliente;
+- segregação de dados por empresa;
+- histórico de alterações dos bugs;
+- redirecionamento automático por perfil após login.
 
-## Learning Laravel
+## Perfis de acesso
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- `admin`
+- `support`
+- `client-admin`
+- `client-user`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Painéis
 
-## Laravel Sponsors
+- `/eva`: operação interna e administração;
+- `/client`: acompanhamento e abertura de bugs pelo cliente.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Entidades principais
 
-### Premium Partners
+- `Company`
+- `User`
+- `Role`
+- `Bug`
+- `BugStatus`
+- `BugPriority`
+- `BugLog`
+- `BugAttachment`
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Stack
 
-## Contributing
+- PHP 8.5
+- Laravel 12
+- Filament 5
+- Livewire 4
+- PostgreSQL
+- Redis
+- MinIO
+- Mailpit
+- Tailwind CSS 4
+- Vite
+- Pest 4
+- Laravel Sail
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Ambiente local
 
-## Code of Conduct
+Serviços usados no desenvolvimento:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- aplicação Laravel;
+- PostgreSQL;
+- Redis;
+- MinIO;
+- Mailpit.
 
-## Security Vulnerabilities
+## Como rodar
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cp .env.example .env
+vendor/bin/sail up -d
+vendor/bin/sail composer install
+vendor/bin/sail artisan key:generate --no-interaction
+vendor/bin/sail artisan migrate --seed --no-interaction
+vendor/bin/sail npm install
+vendor/bin/sail npm run dev
+```
 
-## License
+## Seed inicial
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+O projeto cria dados básicos para:
+
+- funções;
+- status de bug;
+- prioridades;
+- empresa base;
+- usuário administrador.
+
+Fallback padrão do admin:
+
+- e-mail: `admin@admin.com`
+- senha: `password`
+
+## Estrutura resumida
+
+```text
+app/Filament        # painéis, recursos e widgets
+app/Models          # entidades do domínio
+app/Policies        # regras de acesso
+app/Observers       # histórico automático
+database/migrations # estrutura do banco
+database/seeders    # carga inicial
+tests/Feature       # testes principais
+compose.yaml        # ambiente local com Sail
+```
+
+## Observação
+
+O projeto já está bem estruturado para uso como bug tracker multiempresa. O principal ponto técnico visível hoje é a necessidade de revisar a configuração de anexos com MinIO para garantir alinhamento entre modelo e disco configurado.
